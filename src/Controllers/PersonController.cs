@@ -51,31 +51,34 @@ public class PersonController : ControllerBase{
     }
 
     [HttpPut("{id}")]
-    public ActionResult<Object> Update([FromRoute] int id, [FromBody]Person person){
+    public ActionResult<Object> Update([FromRoute] int id, [FromBody] Person person){
 
-        var result = _context.persons.SingleOrDefault(e => e.id == id);
+       /* Validação de Id impedindo de atualizar com algum conflito não identificado
+       var result = _context.persons.SingleOrDefault(e => e.id == id);
 
         if(result is null){
             return NotFound(new {
                 msg = "Registro não encontrado",
                 status = HttpStatusCode.NotFound
-            });
-        }
+            });   
+        }*/
 
         try{
             _context.persons.Update(person);
             _context.SaveChanges();
-        }catch{
+
+      }catch(System.Exception){
             return BadRequest(new {
             msg = "Ocorreu um erro ao enviar solicitação de atualização do id " + id,
             status = HttpStatusCode.BadRequest
-            })
+            });
         }
   
         return Ok(new {
             msg = "Dados do id " + id + " atualizados",
             status = HttpStatusCode.OK
         });
+
     }
 
     [HttpDelete("{id}")]
